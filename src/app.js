@@ -3,6 +3,7 @@ const express = require('express')
 const hbs = require('hbs')
 const bodyparser = require('body-parser')
 const morgan = require('morgan')
+const cookieParser = require('cookie-parser')
 require('dotenv').config({ path: __dirname + '/config.env' })
 const connectDB = require('./db/mongoose')
 const userRouter = require('./routers/user')
@@ -19,14 +20,15 @@ const partialsPath = path.join(__dirname, '../templates/partials')
 
 app.use(express.json())
 
+// parse request to body-parser
+app.use(bodyparser.urlencoded({ extended: true }))
+app.use(cookieParser())
+
 // log request
 app.use(morgan('tiny'))
 
 // mongodb connection
 connectDB();
-
-// parse request to body-parser
-app.use(bodyparser.urlencoded({ extended: true }))
 
 // set view engine
 app.set("view engine", "hbs")
@@ -46,6 +48,7 @@ hbs.handlebars.registerHelper("setChecked", function (value, currentValue) {
 })
 
 hbs.handlebars.registerHelper("sliceDate", function (value) {
+    console.log(`-> value: ${value}`)
     return value.slice(0, 10)
 })
 

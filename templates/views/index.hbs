@@ -19,12 +19,20 @@
 
     <main id="site-main">
         <div class="container">
+
             <div class="box-nav d-flex justify-between">
                 <a href="/add_user" class="border-shadow">
                     <span class="text-gradient">New User <i class="fas fa-user"></i></span>
                 </a>
             </div>
-
+            <div class="box-nav d-flex justify-between">
+                <a href="/users/logout" class="border-shadow">
+                    <span class="text-gradient logout">Logout</span>
+                </a>
+                <a href="/users/logoutALL" class="border-shadow">
+                    <span class="text-gradient logoutALL">Logout from all devices</span>
+                </a>
+            </div>
             <form action="/" method="POST">
                 <table class="table">
                     <tbody>

@@ -3,21 +3,34 @@ $("#add_user").submit(function (event) {
 })
 
 $("#update_user").submit(function (event) {
+    console.log('-> Update triggered')
     event.preventDefault();
 
     var unindexed_array = $(this).serializeArray();
     var data = {}
+    var id
 
     $.map(unindexed_array, function (n, i) {
-        data[n['name']] = n['value']
+        if (n['name'] !== 'id') {
+            data[n['name']] = n['value']
+        } else {
+            id = n['value']
+        }
     })
 
+    for (key in data) {
+        console.log(`data[${key}]: ${data[key]}`)
+    }
+
     var request = {
-        url: "http://localhost:3000/users/" + data.id,
-        method: "PUT",
+        type: 'PUT',
+        url: "http://localhost:3000/users/" + id,
         data: JSON.stringify(data),
         dataType: "json",
-        contentType: "application/json"
+        contentType: "application/json",
+        error: function (e) {
+            console.log(e)
+        }
     }
 
     $.ajax(request).done(function (response) {
@@ -26,8 +39,8 @@ $("#update_user").submit(function (event) {
 
 })
 
-if (window.location.pathname == "/") {
-    $ondelete = $(".table tbody td a.delete")
+if (window.location.pathname == "/home") {
+    $ondelete = $(".table tbody tr.make-changes td a.delete")
     $ondelete.click(function () {
         var id = $(this).attr("data-id")
 

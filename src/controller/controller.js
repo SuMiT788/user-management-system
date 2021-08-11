@@ -5,8 +5,11 @@ exports.login = async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
-        res.send({ user, token })
-        // res.redirect('/home')
+        res.cookie('auth_token', token, {
+            httpOnly: true,
+        })
+        // res.send({ user, token })
+        res.redirect('/home')
     } catch (e) {
         res.status(400).send({ 'error': e })
     }
@@ -20,7 +23,7 @@ exports.logout = async (req, res) => {
         })
         await req.user.save()
 
-        res.send()
+        res.redirect('/')
     } catch (e) {
         res.status(500).send()
     }
@@ -32,7 +35,7 @@ exports.logoutALL = async (req, res) => {
         req.user.tokens = []
         await req.user.save()
 
-        res.send()
+        res.redirect('/')
     } catch (e) {
         res.status(500).send()
     }
@@ -51,8 +54,8 @@ exports.create = async (req, res) => {
 
     try {
         await user.save()
-        res.status(201).send(user)
-        // res.redirect('/add_user')
+        // res.status(201).send(user)
+        res.redirect('/add_user')
     } catch (e) {
         res.status(400).send(e.message || "Some error occurred while creating a create operation")
     }
@@ -62,6 +65,10 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
     // store id in variable
     const _id = req.params.id
+
+    for (key in req.body) {
+        console.log(`req.body[${key}]: ${req.body[key]}`)
+    }
 
     // check if update param is in allowedUpdates
     const updates = Object.keys(req.body)
@@ -135,7 +142,7 @@ exports.find = async (req, res) => {
 
 // view particular user with id
 exports.findOne = async (req, res) => {
-    const _id = req.params.id
+    const _id = req.query.id
 
     try {
         const user = await User.findById(_id)

@@ -8,7 +8,9 @@ exports.login_user = async (req, res) => {
 exports.homeRoutes = async (req, res) => {
     try {
         // Make a get request to /users
-        const users = await axios.get('http://localhost:3000/users')
+        console.log('-> Trying to get user information')
+        const token = req.cookies.auth_token
+        const users = await axios.get('http://localhost:3000/users', { params: { auth_token: token, token_flag: true } })
         console.log(users.data)
         res.render('index', { users: users.data, i: 0 })
     } catch (e) {
@@ -22,7 +24,9 @@ exports.add_user = (req, res) => {
 
 exports.update_user = async (req, res) => {
     try {
-        const user = await axios.get('http://localhost:3000/users', { params: { id: req.query.id } })
+        const token = req.cookies.auth_token
+        const user = await axios.get('http://localhost:3000/user', { params: { id: req.query.id, auth_token: token, token_flag: true } })
+        console.log(user.data)
         res.render("update_user", { user: user.data })
     } catch (e) {
         res.send(e)
